@@ -1,0 +1,17 @@
+{
+  "base_version": "0.4.0",
+  "core_sha256": {
+    "milu/diagnose.py": "3f7a6efefb4b09d6176daea1b98997b457d91f4099f2170f45d4b73c5554a068",
+    "milu/f32c.py": "a668c0694e91367c7330104b189dc5a3ad30c7955e9100e953146101081797bd",
+    "milu/gimbal.py": "9cf97dac9d830ab36a39dce16065448c2f1e24862287ff237a49b122c827108a",
+    "milu/light.py": "31ceabbc3fc02c31620a34fc1fd7486d01150e8dd98fda6186ec94cf5e903cb7",
+    "milu/maixcam2.py": "5e9986899aaadcabd4b4fee847da15173d72472923a65c3224bd975649714cf4",
+    "milu/runtime.py": "15b7c86d679436bcacb51779945a45ff7ed7fb7b075d394c8ff4a6666527971a",
+    "milu/settings.py": "64c9fa86b87bba060b18781518da46b13d1e5af7bb8f5973e5b4e5bc9628e726",
+    "milu/simulate.py": "c4a8a83594ebb00acb399f86d7d5ff6ba24f0043c51774b965e6eb1bf2cb865f",
+    "milu/targeting.py": "55bd9fc1c3dbdf928d5728941a1544c4f0bbc4356b0bef403ce6b12eeb9e5325",
+    "milu/tracking.py": "cfa16c0258b168d6e56b42047b5349c83f6dd447659d1df3757bd58d700ccf69",
+    "milu/vision.py": "363dc9bffdf11ce024f90c1834cf70edaa2c295c0042fae09b4118442472a657",
+    "milu/__init__.py": "91b09da1e00ffb35438586d28b484e3c28e9cd70714be589d96538364c602834"
+  }
+}

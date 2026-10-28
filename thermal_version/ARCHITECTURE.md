@@ -1,0 +1,19 @@
+# 架构
+
+本目录是独立测温集成版，已同步原版0.4.0核心；识别连续性行为见docs/adr/0006-recognition-continuity.md。默认 main → thermal_main → thermo.runtime；原模式由 base_main → milu.runtime 运行。thermo 的显示/跟踪和传感器各自独立进程，主进程独占执行器；接口设计见 docs/adr/0004-thermal-integration.md，状态见 docs/thermal-state-machine.md。当前按ADR0005切换微雪D55标准I2C；thermo.probe提供不启动执行器的限时传感器检查。以下为复用原版控制架构。
+
+`camera + YOLO11（子进程）→ 最新帧队列 → TargetStream → VisualServo → Gimbal → F32C UART`；`LightGate → MOS GPIO`。
+
+main/runtime 为唯一执行器所有者。vision 只拥有相机、NPU和显示，队列长度1、丢弃历史积压。dual_buff=False，采集前记单调时间，延迟包含相机读取和推理。20 Hz 控制循环不会等待推理；目标帧短时复用，超过0.25秒即失效，新空帧立即清除目标。
+
+targeting 的最近邻关联保持当前目标，重获时更新generation。多框可继续关联跟踪但禁止光点。按新帧采集间隔平滑误差，以镜头视场转换角误差，P外环、每轴死区回差、速度/加速度/加加速度整形；保留浮点位置参考并限制在反馈±2°以内，边界前提前减速。目标失效或控制长暂停时重新对齐反馈。无预测，不虚构目标运动方向。默认FOV是假设，现场可改。
+
+Gimbal 负责启动、反馈查询、软件零点和越限保护。模式3使用厂家内部电机闭环，应用不改其PID寄存器。两个角度先共同验证再发送，UART两帧不是硬件原子事务；第二轴失败会尝试失能两轴并终止会话。查询每轴有截止时间，协议没有序号，串行查询、清空旧接收和匹配ID/类型减少旧帧混入，无法密码学证明反馈新鲜。
+
+maixcam2 隔离GPIO、pinmap和Linux非阻塞串口，write一次发送完整帧，部分写入直接故障。每帧间隔包含115200串行化时间+2ms。read最多256字节，反馈解析器残留≤8字节。不存在无界总线等待、ISR或自定义DMA，底层驱动与缓存由Linux/MaixPy负责。
+
+LightGate 是独立确定性状态机；每次潜在阻塞IO前关灯，任何输出许可必须使用当前视觉和反馈条件。I/O在状态提交后执行，失败退出，无自动硬件重试。固件/系统复位不自动恢复paper会话。没有持久化执行器状态、OTA、Flash写入或在线控制服务。
+
+日志循环3×1MB；队列1帧，仅传框不传图。NPU输入640×480，3层65通道原始检测头，MaixPy处理DFL/NMS。板上RAM/CPU/时延实测尚缺，不把PC GPU速度当成板端性能。
+
+legacy tracking.Tracker/simulate 保留为离线参考；板端使用 targeting/Gimbal/LightGate，避免把原离线状态机误认为设备运行器。未来K230迁移需重写设备和进程层、转换独立模型，纯协议与控制保留。

@@ -1,0 +1,5 @@
+# ADR 0006: Home before vision, full shortest-turn travel
+Accepted 2026-10-12. User confirms calibrated horizontal zero and 360-degree mechanical rotation. Field failure HOME_TRAVEL_EXCEEDED occurs before enable because deployment permits only 100 degrees.
+Allow shortest mechanical-zero travel up to 180 degrees at 6 degrees/s with 45-second deadline. Following limits become +/-90 degrees on both axes; continuous multi-turn following remains excluded. Do not rewrite stored zero.
+After metadata validation, initialize and home actuators before spawning vision. Begin the separate 45-second vision startup budget after homing. Remove unconditional startup disable to avoid deliberately releasing a gravity-loaded camera; retain zero-speed/current-position preload and all fault/exit disable paths. No promise of holding after exit or power loss. Firmware command behavior under existing enabled modes and physical load still needs board validation.
+Regression evidence: half-turn simulation, no startup disable, actionable axis/travel errors and runtime startup order. Original deer/thermal versions unchanged.

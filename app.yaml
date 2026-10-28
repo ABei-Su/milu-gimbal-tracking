@@ -1,0 +1,14 @@
+id: milu_tracker
+name: Milu Tracker
+name[zh]: 麋鹿云台实验
+version: 0.4.0
+author: Milu Project
+desc: MaixCAM2 detection and paper-target gimbal experiment
+icon: ""
+files:
+  - main.py
+  - config.json
+  - milu
+  - models/milu.mud
+  - models/milu_npu.axmodel
+  - models/milu_vnpu.axmodel

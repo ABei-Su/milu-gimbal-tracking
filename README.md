@@ -1,59 +1,39 @@
-# 麋鹿全身检测模型 · YOLO11n
+# 麋鹿识别与双轴无刷云台跟随 · MaixCAM2
 
-基于用户人工标注照片训练的单类别目标检测模型，类别 `0: milu`（麋鹿全身）。用于 PC 视觉实验及后续 MaixCAM2 模型转换。
+MaixCAM2 视觉识别 + WHEELTEC F32C 双轴无刷电机控制项目，包含麋鹿检测、热成像实验版，以及已封板的人脸跟随 v1.0。
 
-## 文件
-- `weights/best.pt`：已完成训练并评估的 PyTorch 最佳权重。
-- `weights/best.onnx`：固定 RGB NCHW 输入 `[1,3,480,640]`、opset 17 的 ONNX 导出，输入归一化至 0–1；输出为解码后的检测结果，尚需置信度筛选和 NMS。
-- `training/`：训练脚本、训练参数、数据配置示例。
-- `evaluation/`：训练曲线原始指标及测试集评估结果。
-- `SHA256.json`：文件完整性校验。
+## 运行哪个版本
+| 目录 | 用途 | 入口与状态 |
+| --- | --- | --- |
+| `person_follow_test/` | **人脸识别与云台跟随 v1.0** | MaixVision 打开整个目录，运行项目；入口 `main.py`；已有用户实机反馈 |
+| 仓库根目录 | 原麋鹿识别与云台控制原型 | `main.py`，默认 observe；详细说明见 [原项目说明](PROJECT_README.md) |
+| `thermal_version/` | MLX90640 热成像组合实验版 | 见该目录 README，硬件验收状态以其文档为准 |
+| `trained_model/` | 700 多张人工标注图训练的新麋鹿模型 | PT/ONNX 已评估，尚需 AX 编译；**未接替原程序的模型** |
 
-## 已完成训练与测试
-初始预训练模型：`yolo11n.pt`；640 输入；AdamW；学习率 0.001；batch 8；seed 42；CUDA；AMP 关闭。
-最多 100 轮，在第 78 轮早停，验证集最佳为第 58 轮。
+## 人脸云台跟随 v1.0（当前实机使用版）
+1. 下载仓库 ZIP 并解压，或 `git clone https://github.com/ABei-Su/milu-gimbal-tracking.git`。
+2. MaixVision 选择“打开文件夹/项目”，打开 `person_follow_test/`。
+3. 连接 MaixCAM2，确保板端存在兼容的人脸模型，点击 **运行项目**。
+4. 启动日志应显示 `[BUILD] v1.0.0 | yaw-gentle-v2 frozen`。
 
-| 测试集指标 | 数值 |
-| --- | ---: |
-| Precision | 84.08% |
-| Recall | 77.74% |
-| mAP@0.5 | 86.29% |
-| mAP@0.5:0.95 | 43.51% |
+串口接线：MaixCAM2 **B0（UART2 TX）→ 电机通信板 RX**，**B1（UART2 RX）→ TX**，**GND → GND**；115200、8N1。
+F32C 电机使用独立电源，电机 1 为左右轴、电机 2 为俯仰轴。电机电源不得接入 MaixCAM2 信号引脚。
+人脸模型采用板端兼容的 `yolo11s_face.mud` 等 AX 模型，查找与选择规则见 [人脸版本说明](person_follow_test/README.md)；仓库不含人脸权重。
 
-以上来自 110 张留出测试图。Precision/Recall 使用验证器选定的运行点，不代表任意固定置信度阈值的结果。
-后续低学习率微调中途停止，未完成最终评估，因此本仓库发布已完成评估的原最佳模型。
+该封板版启动相对抬头上限 60°，发现有效人脸提前结束；左右软件角度限位已关闭，上下 ±90°。
+控制参数及源码按本地封板版复制。连续绕转的线材余量、负载温升、长期运行等仍需现场验证。
 
-## 数据与限制
-原始 738 张图、728 份 XML；10 张缺少 XML 的图片排除；1874 个标注框。
-508 张训练、110 张验证、110 张测试。精确哈希及 dHash 距离不超过 4 的连通组统一划分，seed 42，共 713 组。
-同拍摄会话可能跨组，不能保证完全独立；可能存在远处或遮挡动物漏标。
-普通鹿、其他动物和空场景等负样本不足，不能依据这些结果声称已具备可靠物种鉴别或野外泛化能力。
-原始图片和标注未包含在公开仓库。
+## 麋鹿模型
+根目录 `models/milu*.axmodel` 是原先机器候选标注训练的**旧原型模型**，供原程序联调；不是新人工标注模型。
+新人工标注模型位于 `trained_model/weights/best.pt` 和 `best.onnx`，测试集 mAP@0.5 为 86.29%、mAP@0.5:0.95 为 43.51%。
+新模型尚未生成 `.axmodel`、未接入现有云台程序。其数据、指标与局限见 [模型说明](trained_model/README.md)。
 
-## PC 使用
-Python 3.12 环境。训练使用 PyTorch 2.7.1+cu128；CUDA 版本需与本机环境相适配。
-```bash
-pip install -r requirements.txt
-yolo predict model=weights/best.pt source=your_image.jpg conf=0.5
-```
+## 文档与验证
+架构、硬件约定、状态机、ADR、接线及部署说明在各版本 `docs/` 与 `ARCHITECTURE.md` 中。
+Python 主机验证：安装 `requirements-dev.txt` 后，在相应版本目录执行 `python tools/verify.py`。
+本仓库保留原有开发文档与版本记录；存在历史状态描述时，以对应版本 README 顶部及实际 config.json 为准。
 
-Python 示例：
-```python
-from ultralytics import YOLO
-model = YOLO("weights/best.pt")
-results = model.predict("your_image.jpg", conf=0.5)
-```
-
-如需使用自行准备且获授权的数据重新训练，将图片及 YOLO 标签放到 `dataset/`，按 `training/data.example.yaml` 配置 `dataset/data.yaml`，从仓库根目录执行：
-```bash
-python training/train.py
-```
-训练脚本会生成 `run/`，完成后评估测试集并导出 ONNX；已存在 `run/` 时拒绝覆盖。数据集未公开，运行需自行提供数据。环境和随机种子并不保证跨硬件逐位复现。
-
-## MaixCAM2 状态
-**这份 PT/ONNX 不能直接放进 MaixCAM2 当作 `.axmodel` 运行。**
-还需要 AX620E 量化编译、输出头适配及板端验证；本仓库尚未提供本次训练的 `.axmodel`。
-云台、电机控制及人脸跟随 v1.0 程序不属于此模型仓库。
-
-## 许可
-见 [NOTICE.md](NOTICE.md) 和 [LICENSE](LICENSE)。基于 [Ultralytics YOLO](https://github.com/ultralytics/ultralytics)。
+## 公开范围与许可
+包含项目源码、配置、测试、工具、部署说明、旧 AX 原型模型及新训练 PT/ONNX 模型。
+不包含原始照片、聊天附件、厂家资料压缩包、个人调试日志、环境和账号凭据。
+自编代码和派生模型按根目录 AGPL-3.0 提供；上游来源见 [模型许可说明](trained_model/NOTICE.md)，依赖保留各自许可。

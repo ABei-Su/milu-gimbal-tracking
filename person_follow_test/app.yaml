@@ -1,0 +1,11 @@
+id: person_follow_test
+name: Person Follow Test
+name[zh]: 人脸云台测试
+version: 1.0.0
+author: Milu Project
+desc: MaixCAM2 person gimbal following test, laser disabled
+icon: ""
+files:
+  - main.py
+  - config.json
+  - milu

@@ -1,0 +1,19 @@
+id: milu_thermal
+name: Milu Thermal
+name[zh]: 麋鹿跟踪测温实验
+version: 0.3.0
+author: Milu Project
+desc: Touch-selected eye tracking and experimental IR surface temperature
+icon: ""
+files:
+  - main.py
+  - base_main.py
+  - thermal_main.py
+  - config.json
+  - thermal.json
+  - thermal_gimbal.json
+  - milu
+  - thermo
+  - models/milu.mud
+  - models/milu_npu.axmodel
+  - models/milu_vnpu.axmodel

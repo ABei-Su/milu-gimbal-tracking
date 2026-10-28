@@ -1,0 +1,4 @@
+# ADR0015: Filter frame-driven velocity request; search90
+User reports residual stepping and authorizes search up to90deg.54 log samples: control48.7Hz median, vision16.9FPS, frame86.5ms, no sampled rebases or clamps except initialization. This does not rule out unsampled events or physical motor tuning.
+Add request_tau default0 for compatibility, deployment40ms. Filter desired velocity in each bounded trajectory substep before applying braking envelope and derivative constraints. Both axes identical; reset filtered drive on loss/rebase/discontinuity/clamp to avoid stored motion. No stale-target extrapolation extension. This reduces command-request steps at cost of some phase lag; actual mechanical improvement unverified.
+Startup maximum90deg at6deg/s, timeout45s; early fresh-face acquisition unchanged. Relative search, not absolute home. No motor PID/current changes.
