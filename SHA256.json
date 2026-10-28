@@ -1,0 +1,15 @@
+{
+  ".gitattributes": "6cd0135010598255202d6a3de73541b2b558f8c0b0ee74e76381d6b5173e871c",
+  ".gitignore": "5a67a3eae2fa787367cfb300572da5e92cbc9e7195383441b16d3a696ba36fd7",
+  "evaluation/results.csv": "1ae3c5a3044a1874807d6ad641656e5ff9d263d08d5acd4e17e1417f9eb64cc7",
+  "evaluation/test_metrics.json": "f4a74ddf1c8686a760f46cabcd650588234fa864e75096b33be6a05e07089733",
+  "LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+  "NOTICE.md": "c67ac0b7eaa6401a84937d305d517b37e5cefe8aee99eb0d0a1c2eb043d06862",
+  "README.md": "253f48b087b672f386767fa13034e784647ff22f00febc797ea3ae6d005857b9",
+  "requirements.txt": "3c94fc46ef2da58a39054103271a8c2229a4b273271f6ced8c4222065ef511d0",
+  "training/args.yaml": "adba94c46e40b6b775b15ccfbd56641194c5f9cd2ddadb34b5d7434b52ed6c8f",
+  "training/data.example.yaml": "25be11d665bfcf940d3ea73d0b5c855ff91dffbc6241f74daa2d6edd1a527453",
+  "training/train.py": "3d4e28e554ecce9fcc8c49fbab45e91e278e8d450be8c1d2345a5537f295bf35",
+  "weights/best.onnx": "a2572d38cd5688f6ee38b510feea88170ddf48350d329f58438cae514ddca7f3",
+  "weights/best.pt": "cef9c0aa23a4f060b4d616f14966c1887a11cfd9a5c27fc108e38456a379309d"
+}

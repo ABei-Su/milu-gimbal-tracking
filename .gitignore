@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+dataset/
+run/
+test_evaluation/
+Ultralytics/
+ultralytics_settings/

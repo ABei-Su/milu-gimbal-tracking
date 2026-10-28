@@ -1,0 +1,11 @@
+{
+  "weights": "weights/best.pt",
+  "test_metrics": {
+    "metrics/precision(B)": 0.8407723377131616,
+    "metrics/recall(B)": 0.7773584905660378,
+    "metrics/mAP50(B)": 0.8629287920960659,
+    "metrics/mAP50-95(B)": 0.43505096646678887,
+    "fitness": 0.43505096646678887
+  },
+  "limitations": "User-label agreement on grouped holdout; not independent wildlife or hardware validation"
+}
